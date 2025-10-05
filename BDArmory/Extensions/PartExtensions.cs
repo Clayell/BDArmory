@@ -473,9 +473,9 @@ namespace BDArmory.Extensions
         public static Vector3 GetSize(this Part part)
         {
             var meshFilter = part.GetComponentInChildren<MeshFilter>();
-            if (meshFilter == null)
+            if (meshFilter == null || meshFilter.mesh == null || meshFilter.mesh.bounds == null || meshFilter.mesh.bounds.size == null)
             {
-                Debug.LogWarning($"[BDArmory.PartExtension]: {part.name} has no MeshFilter! Returning zero size.");
+                Debug.LogWarning($"[BDArmory.PartExtension]: Could not find size of {part.name}! Returning zero size.");
                 return Vector3.zero;
             }
             var size = meshFilter.mesh.bounds.size;
@@ -501,7 +501,7 @@ namespace BDArmory.Extensions
                         tweakScaleInstalled = true;
                 tweakScaleChecked = true;
             }
-            if (tweakScaleInstalled && part.Modules.Contains("TweakScale"))
+            if (tweakScaleInstalled && part.Modules != null && part.Modules.Contains("TweakScale"))
             {
                 var tweakScaleModule = part.Modules["TweakScale"];
                 scaleMultiplier = tweakScaleModule.Fields["currentScale"].GetValue<float>(tweakScaleModule) /
